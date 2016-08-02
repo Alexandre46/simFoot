@@ -1,34 +1,83 @@
 package net.codejava.swing.jpanel;
 
 import java.awt.event.*;
-
 import javax.swing.*;
-
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.time.Duration;
+import java.util.Date;
 import java.util.Random;
+import java.io.*;
+import sun.audio.*;
+import javax.sound.*;
+import java.applet.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.Timer;
+
+import net.codejava.swing.jpanel.TimeFrame.StopWatchPane;
+
+
 
 
 @SuppressWarnings("serial")
 class JanelaSaida extends JFrame implements ActionListener {
 
-	//Definiçao de variaveis Globais para classe
+	//TEMPORIZADOR
+	private JLabel timeLabel;
+	
+	/*
+	public void TimerTime()
+    {
+    
+    			Scanner scan = new Scanner(System.in);
+    		    System.out.println("Jogo de quantos minutos?");
+    		    int timet= scan.nextInt() * 60; // Convert to seconds
+    		    long delay = timet * 1000;
+    		    do
+    		    {
+    		      int minutes = timet / 60;
+    		      int seconds = timet % 60;
+    		      System.out.println(minutes +  seconds);
+    		      try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+    		      timet = timet - 1;
+    		      delay = delay - 1000;
+
+    		    }
+     	       while (delay != 0);
+    		    	System.out.println("Acabou!");
+    
+    }*/
+	
+	//DefiniÃ§ao de variaveis Globais para classe
 	//MIN = 50 MAX =100
 	int min = 50;
 	int max = 100;
 	
-	//Dados para geraçao aleatoria da Imagem da Carta
+	//Dados para geraÃ§ao aleatoria da Imagem da Carta
+	//Alterar se mudarmos localizaÃ§ao pasta dos futebolistas
 	    String prefix = new String("C:\\Users\\Alex\\Desktop\\SimFoot Executable\\Futebolistas");
 	    File picDir = new File(prefix);
 	    String[] fileNames = picDir.list();
 	    int numPix = fileNames.length;
 		Random rg = new Random();
 	
-	//Criaçao da Frame
-	JFrame janela = new JFrame("simFoot © 2015 ");
+		
+	//CriaÃ§ao da Frame
+	JFrame janela = new JFrame("simFoot Â© 2015 ");
 	
-	//Criaçao do panel
+	//CriaÃ§ao do panel
     JPanel pnlButton = new JPanel(new GridLayout(5,1));
     
     //Painel da carta jogador
@@ -36,19 +85,27 @@ class JanelaSaida extends JFrame implements ActionListener {
     JPanel Carta2 = new JPanel();
     JPanel Carta3 = new JPanel();
     JPanel Carta = new JPanel();
+    
+    //Painel do estadio e arranque jogo
+    JPanel pnlstart = new JPanel(new GridLayout(3,0));
+    JPanel inicio = new JPanel();
+    JPanel inicio2 = new JPanel();
+    JPanel timeLabel1 = new JPanel();
+    
    
     //Painel da Carta Repetir
     JPanel CartaRepeat = new JPanel();
     
-    // Criaçao dos botoes
+    // CriaÃ§ao dos botoes
    JButton start = new JButton("INICIAR");
    JButton about = new JButton("SOBRE");
    JButton exit = new JButton("SAIR");
    
-   //Criaçao de botao para gerar carta de jogador
+   //CriaÃ§ao de botao para gerar carta de jogador
    JButton GerarCarta = new JButton("SORTEAR JOGADOR");
+   
  //lABEL COM NOME DO JOGO
-   JLabel simFoot = new JLabel ("simFoot © 2015 - Produzido por ALEXANDRE ABREU");
+   JLabel simFoot = new JLabel ("simFoot Â© 2015 - Produzido por ALEXANDRE ABREU");
    
    //Labels para carta gerada!!
    JLabel infonome = new JLabel ("Nome Jogador:");
@@ -58,7 +115,7 @@ class JanelaSaida extends JFrame implements ActionListener {
    JLabel info4 = new JLabel ("Drible:");
    JLabel info5 = new JLabel ("Resistencia:");
    JButton repeat = new JButton("REPETIR");
-  
+   JButton voltar = new JButton("VOLTAR AO MENU");
 
 // Constructor: 
 	public JanelaSaida() 
@@ -76,11 +133,22 @@ class JanelaSaida extends JFrame implements ActionListener {
       add(loginBackground);
       loginBackground.setBounds(400, 400, 400, 200);
 	  
+    //Invoca a foto que tem estadio
+      JLabel campo = new javax.swing.JLabel();
+      campo.setIcon(new javax.swing.ImageIcon("C:\\Users\\Alex\\Desktop\\SimFoot Executable\\estadio.jpg")); 
+      campo.setMaximumSize(new java.awt.Dimension(400, 200));
+      campo.setMinimumSize(new java.awt.Dimension(200, 50));
+      campo.setPreferredSize(new java.awt.Dimension(800, 600));
+      campo.setSize(new Dimension(campo.getWidth(), campo.getHeight()));
+      add(campo);
+
       
-	  //Definiçao do fundo da Frame
+	  //DefiniÃ§ao do fundo da Frame
+      janela.setLayout(new BorderLayout());
        janela.setLocation(200, 100);
+       janela.setPreferredSize(new Dimension(1024, 800));
 	   janela.add(pnlButton, BorderLayout.CENTER);
-	   janela.setTitle("Simulador de Futebol - simFoot © 2015");
+	   janela.setTitle("Simulador de Futebol - simFoot Â© 2015");
 	   janela.setBackground(Color.BLACK);
 	   janela.add(loginBackground);
 	   janela.pack();
@@ -96,8 +164,9 @@ class JanelaSaida extends JFrame implements ActionListener {
 
 	    // Create os menus
 	    JMenu menu1 = new JMenu("Ficheiro");
-	    JMenu menu = new JMenu("Configurações");
+	    JMenu menu = new JMenu("ConfiguraÃ§Ãµes");
 	    JMenu menu2 = new JMenu("Ajuda");
+	    
 	 // Create a menu item
 	    JMenuItem arq1 = new JMenuItem("Abrir Jogador Criado");
 	    JMenuItem arq2 = new JMenuItem("Sortear Jogador");
@@ -134,6 +203,26 @@ class JanelaSaida extends JFrame implements ActionListener {
 		janela.setJMenuBar(menuBar);
 		janela.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
+		//adicionar ao painel inicio
+		//inicio.setPreferredSize(new Dimension(800, 600));
+		inicio.setBackground(Color.GREEN);
+		JLabel startgame = new JLabel("JOGO vai comeÃ§ar em breve!");
+		inicio.add(startgame,BorderLayout.PAGE_START);
+		inicio.add(campo);
+		
+		//adicionar ao painel inicio2
+		 //Questionar quantos minutos para jogo
+		inicio2.setPreferredSize(new Dimension(100, 50));
+		
+	      JLabel askmin = new JLabel("Quantos Minutos de jogo?      : ");
+		  JTextField minutes = new JTextField(6);
+		  JButton confirm = new JButton("ARRANCAR JOGO");
+		  
+		  inicio2.add(askmin);
+	      inicio2.add(minutes);
+	      inicio2.add(confirm); 
+		
+	      
 	//parametros botao start,sobre,exit,gerar carta
       start.setBounds(100, 100, 500, 500);
       start.setBackground(new java.awt.Color(127,255,212));
@@ -145,6 +234,9 @@ class JanelaSaida extends JFrame implements ActionListener {
       
       exit.setBounds(100, 100 , 200,200);
       exit.setBackground(Color.RED);
+      
+      voltar.setBounds(100, 100 , 200,200);
+      voltar.setBackground(Color.GREEN);
       
       GerarCarta.setBounds(300, 100, 200, 200);
       GerarCarta.setBackground(Color.YELLOW);
@@ -161,18 +253,37 @@ class JanelaSaida extends JFrame implements ActionListener {
       repeat.setForeground(Color.BLUE);
       repeat.setSize(200, 500);
      
+      //Bounds dos paineis do start
+      inicio.setBounds(1024, 800, 400, 300);
+      inicio.setBackground(Color.GREEN);
+      inicio.setPreferredSize( new Dimension(800, 600) );
+      
+      inicio2.setBounds(800, 10, 10, 10);
+      inicio2.setBackground(Color.GREEN);
+      inicio2.setPreferredSize( new Dimension(100, 50) );
+      
       // JPanel bounds
       pnlButton.setBounds(200, 100, 300, 100);
       pnlButton.setVisible(true);
    
-       //Adding to JPanel
-      pnlButton.add(about,BorderLayout.WEST);
-      pnlButton.add(start, BorderLayout.CENTER);
-      pnlButton.add(exit, BorderLayout.EAST);
-      pnlButton.add(GerarCarta, BorderLayout.NORTH);
-      pnlButton.add(simFoot,BorderLayout.SOUTH);
-     
       
+       //Adding to JPanel
+      pnlButton.add(start,BorderLayout.WEST);
+      pnlButton.add(GerarCarta, BorderLayout.CENTER);
+      pnlButton.add(simFoot, BorderLayout.EAST);
+      pnlButton.add(about, BorderLayout.NORTH);
+      pnlButton.add(exit,BorderLayout.SOUTH);
+     
+      // JPanel do start bounds
+      	pnlstart.setLayout(new BoxLayout(pnlstart, BoxLayout.Y_AXIS));
+		pnlstart.setBackground(Color.GREEN);
+	    pnlstart.setPreferredSize( new Dimension(1024, 800) );
+	    pnlstart.setVisible(true);
+	   
+	       //Adding to JPanel
+	      pnlstart.add(inicio2,BorderLayout.PAGE_START);
+	      pnlstart.add(inicio,BorderLayout.CENTER);
+	      
       //Fixar tamanho do panel para a Frame
       janela.validate();
   
@@ -180,12 +291,39 @@ class JanelaSaida extends JFrame implements ActionListener {
     //Accao botao START
       start.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e){
-    		 //System.out.println("JOGO A CORRER ...");
     		
+    		  new music().hide();
+    		  JPanel panelTrocar = new JPanel(new BorderLayout(2,1));
+    		  if ( e.getSource() == start ) {
+    			  panelTrocar = pnlstart;
+    	        	pnlstart.setVisible(true);
+    	  }
+    		  else{
+    			  panelTrocar = pnlstart;
+    	        	
+    		  }
+    		  
+    		  	start();
+      	       janela. getContentPane().removeAll();
+    	       janela. getContentPane().add(panelTrocar);
+    	       janela.revalidate();
+    	       janela.repaint();
+    	       janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    		    
+    	  	}
+    	  }
+    	  );
+     
+      //AccÃ§ao botao confirm dos minutos
+      confirm.addActionListener(new ActionListener(){
+    	  public void actionPerformed(ActionEvent e){
+    	  
     		  
     	  }
+    	  
       });
-     
+      
+      
       //Acao botao Gerar CArta Jogador
       GerarCarta.addActionListener(new ActionListener(){
   	  	public void actionPerformed(ActionEvent e){
@@ -251,23 +389,23 @@ class JanelaSaida extends JFrame implements ActionListener {
   	  	);	 
   		
     
-    //Programaçao do menu Ajuda1 - COMANDOS
+    //ProgramaÃ§ao do menu Ajuda1 - COMANDOS
       ajuda1.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e){
     		  JOptionPane.showMessageDialog(null,
-    		 "Movimento do Rato - Selecionar as opçoes,\n"
+    		 "Movimento do Rato - Selecionar as opÃ§oes,\n"
     		 + "MOUSE1 - Clicar como ENTER \n "
     		 + "ALT+F4 - Sair do Jogo",
-    				 "simFoot © 2015", JOptionPane.INFORMATION_MESSAGE);
+    				 "simFoot Â© 2015", JOptionPane.INFORMATION_MESSAGE);
     	  }
       });
       
-      //Programaçao do menu Ajuda2 - QUER SAIR?
+      //ProgramaÃ§ao do menu Ajuda2 - QUER SAIR?
       ajuda2.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e){
     		  JOptionPane.showMessageDialog(null,
-    		 "Se quiser sair a qualquer altura pressione ALT+F4",
-    				 "simFoot © 2015", JOptionPane.INFORMATION_MESSAGE);
+    		 "Clique em SAIR no menu principal \nSe quiser sair a qualquer altura pressione ALT+F4",
+    				 "simFoot Â© 2015", JOptionPane.INFORMATION_MESSAGE);
     	  }
       });
       
@@ -275,15 +413,23 @@ class JanelaSaida extends JFrame implements ActionListener {
       about.addActionListener(new ActionListener(){
     	  public void actionPerformed(ActionEvent e){
     		  JOptionPane.showMessageDialog(null,
-    		 "Jogo criado no ano de 2015 pelo Engº Alexandre Abreu,\n"
+    		 "Jogo criado no ano de 2015 pelo EngÂº Alexandre Abreu,\n"
     		 + "com o intuito de desenvolver a linguagem Java",
-    				 "simFoot © 2015", JOptionPane.INFORMATION_MESSAGE);
+    				 "simFoot Â© 2015", JOptionPane.INFORMATION_MESSAGE);
     	  }
       });
       //Acao Botao Exit
       exit.addActionListener(new ActionListener(){
     	  	public void actionPerformed(ActionEvent e){
     	  			System.exit(0);
+    	  			}});
+      
+    //Acao Botao Voltar ao menu
+      voltar.addActionListener(new ActionListener(){
+    	  	public void actionPerformed(ActionEvent e){
+    	  		janela.setVisible(false);
+                janela.dispose();
+    	  			new JanelaSaida();
     	  			}});
       
       //Acao MenuItem Fechar Programa
@@ -297,7 +443,7 @@ class JanelaSaida extends JFrame implements ActionListener {
       //Acao MenuItem Abrir Registo
       arq1.addActionListener(new ActionListener(){
     	   public void actionPerformed(ActionEvent e){
-    		   ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "C:\\Users\\Alex\\Desktop\\Programacao\\simFoot\\GamePlayers\\escolhasJOG.txt");
+    		   ProcessBuilder pb = new ProcessBuilder("Notepad.exe", "C:\\Users\\Alex\\Desktop\\simFoot\\GamePlayers\\escolhasJOG.txt");
     		   try {
 				pb.start();
 			} catch (IOException e1) {
@@ -307,12 +453,24 @@ class JanelaSaida extends JFrame implements ActionListener {
     	   } 
     	 }
       );
-     
+      
+      //Accao do menu SOM
+      
+      opcao2.addActionListener(new ActionListener(){
+    	  public void actionPerformed(ActionEvent e){
+    		  new music();
+    		  	 
+    	       
+    	  }
+      }	   
+		
+  );
   
+      
   }	
 	  
 	
-	   //Funçao para limpar Carta Jogador
+	   //FunÃ§ao para limpar Carta Jogador
 	   
 	   private void clear() {
 	       removeAll();
@@ -360,7 +518,7 @@ class JanelaSaida extends JFrame implements ActionListener {
 
 	 
 		   //Label que fica no topo a frente da imagem com Nome jogador 
-		   //Criaçao de fonte
+		   //CriaÃ§ao de fonte
 		   Font myFont1 = new Font(Font.DIALOG, Font.BOLD, 18);
 		   infonome.setForeground(Color.white);
 		   infonome.setFont(myFont1);
@@ -424,6 +582,7 @@ class JanelaSaida extends JFrame implements ActionListener {
 		
 		   //Adicionar os botes repetir e saida a carta3
 		   Carta3.add(repeat);
+		   Carta3.add(voltar);
 		   Carta3.add(exit);
 	}
  
@@ -458,9 +617,10 @@ class JanelaSaida extends JFrame implements ActionListener {
 		   
 		   Carta1.remove(pic);
 		   Carta1.add(pic);
+	
 		
 		//Label que fica no topo a frente da imagem com Nome jogador 
-		   //Criaçao de fonte
+		   //CriaÃ§ao de fonte
 		   Font myFont1 = new Font(Font.DIALOG, Font.BOLD, 18);
 		   infonome.setForeground(Color.white);
 		   infonome.setFont(myFont1);
@@ -524,22 +684,58 @@ class JanelaSaida extends JFrame implements ActionListener {
 		
 		 //Adicionar os botes repetir e saida a carta3
 		   Carta3.add(repeat);
+		   Carta3.add(voltar);
 		   Carta3.add(exit);
 	}
 	
+	//FunÃ§ao para o inicio
+	@SuppressWarnings("unused")
+	private void start(){
+
+			janela.setLayout(new BorderLayout(3,0));
+	       janela.setLocation(200, 100);
+	       janela.setPreferredSize(new Dimension(1024, 800));
+	       janela.add(pnlstart,BorderLayout.CENTER);
+		   janela.setTitle("Jogo a decorrer ....");
+		   janela.setBackground(Color.BLACK);
+		   janela.pack();
+		   janela.setVisible(true); 
+		   
+		 //  timeLabel1.add(timeLabel, BorderLayout.NORTH);
+		 //  janela.add(timeLabel1,BorderLayout.NORTH);
+		   
+		   new TimeFrame().setVisible(true);
+		  
+		   
+	     
+	}
+
+
  
-	//!!! Funcao principal saida da Aplicaçao  !!!
+	
+
+	//!!! Funcao principal saida da AplicaÃ§ao  !!!
  
 public static void main(String[] args) {
-   
+	
 	new JanelaSaida();
 	
+	
+	
 }
+
+
+private static void JavaAudioPlaySoundExample() {
+		// TODO Auto-generated method stub
+		
+	}
 
 
 @Override
 public void actionPerformed(ActionEvent arg0) {
 	// TODO Auto-generated method stub
-	
+	timeLabel.setText( new Date().toString() );
+		} 
+
 } 
-} 
+
